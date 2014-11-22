@@ -1,4 +1,8 @@
 # Python 3.0 must be used because of on-the-fly dictionay deleting 
+# The base source can be founded in the following link as basic.zip
+# http://www.python-forum.org/viewtopic.php?f=11&t=603 
+# [basic.zip] http://xenomind.com/Python/basic.zip
+
 from __future__ import print_function
 
 import cmd
