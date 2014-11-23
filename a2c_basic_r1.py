@@ -312,8 +312,8 @@ class BASIC(cmd.Cmd):
 		# check for a step argument
 		if 'STEP' in stop:
 			stop, x, step = stop.partition('STEP')
-		elif '단계' in stop:
-			stop, x, step = stop.partition('단계')
+		#elif '단계' in stop:
+		#	stop, x, step = stop.partition('단계')
 		else:
 			step = '1'
 

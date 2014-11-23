@@ -304,19 +304,12 @@ class BASIC(cmd.Cmd):
 		"""
 		# split the parts
 		name, x, span = tail.partition('=')
-		if '부터' in span:
-			start, x, stop = span.partition('부터')
-		else:
-			start, x, stop = span.partition('TO')
-            
+		start, x, stop = span.partition('TO')
 		# check for a step argument
 		if 'STEP' in stop:
 			stop, x, step = stop.partition('STEP')
-		elif '단계' in stop:
-			stop, x, step = stop.partition('단계')
 		else:
 			step = '1'
-
 		# set up loop variable and return tracking
 		self.variables[name.strip()] = eval(start, self.variables)
 		return name.strip(), eval(stop, self.variables), eval(step, self.variables)
@@ -582,31 +575,31 @@ class BASIC(cmd.Cmd):
 							print(variable, '=', self.variables[variable], end = ' ')
 					print()
 				# interpret based on first word of line
-				if basic_cmd == 'DATA' or basic_cmd == '데이타':
+				if basic_cmd == 'DATA':
 					data.extend(eval('[{}]'.format(basic_tail)))
-				elif basic_cmd == 'DEF' or basic_cmd == '정의':
+				elif basic_cmd == 'DEF':
 					self.basic_def(basic_tail)
-				elif basic_cmd == 'DIM' or basic_cmd == '크기':
+				elif basic_cmd == 'DIM':
 					self.basic_dim(basic_tail)
-				elif basic_cmd == 'END' or basic_cmd == '끝내라':
+				elif basic_cmd == 'END':
 					break
-				elif basic_cmd == 'FOR' or basic_cmd == '돌려라':
+				elif basic_cmd == 'FOR':
 					name, limit, step = self.basic_for(basic_tail)
 					for_loops[name] = [limit, step, pointer]
-				elif basic_cmd == 'GOSUB' or basic_cmd == '갔다와라':
+				elif basic_cmd == 'GOSUB':
 					gosubs.append(pointer)
 					pointer = line_nums.index(int(basic_tail)) - 1
-				elif basic_cmd == 'GOTO' or basic_cmd == '가라':
+				elif basic_cmd == 'GOTO':
 					pointer = line_nums.index(int(basic_tail)) - 1
-				elif basic_cmd == 'IF' or basic_cmd == '만약':
+				elif basic_cmd == 'IF':
 					goto = self.basic_if(basic_tail)
 					if goto:
 						pointer = line_nums.index(goto) - 1
 				elif basic_cmd == 'INPUT' or basic_cmd == '넣어라':
 					self.basic_input(basic_tail)
-				elif basic_cmd == 'LET' or basic_cmd == '대입':
+				elif basic_cmd == 'LET':
 					exec(basic_tail, self.variables)
-				elif basic_cmd == 'NEXT' or basic_cmd == '다음':
+				elif basic_cmd == 'NEXT':
 					name = basic_tail.strip()
 					self.variables[name] += for_loops[name][1]
 					if for_loops[name][1] > 0:
@@ -617,17 +610,17 @@ class BASIC(cmd.Cmd):
 						pointer = for_loops[name][2]
 					else:
 						del for_loops[name]
-				elif basic_cmd == 'ON' or basic_cmd == '온':
+				elif basic_cmd == 'ON':
 					pointer = line_nums.index(self.basic_on(basic_tail)) - 1
 				elif basic_cmd == 'PRINT' or basic_cmd == '찍어라':
 					self.basic_print(basic_tail)
-				elif basic_cmd == 'READ' or basic_cmd == '읽어라':
+				elif basic_cmd == 'READ':
 					exec('{} = {}'.format(basic_tail, data.pop(0)), self.variables)
-				elif basic_cmd == 'REM' or basic_cmd == '주석':
+				elif basic_cmd == 'REM':
 					pass
-				elif basic_cmd == 'RETURN' or basic_cmd == '돌려주라':
+				elif basic_cmd == 'RETURN':
 					pointer = gosubs.pop()
-				elif basic_cmd == 'STOP' or basic_cmd == '끝내라':
+				elif basic_cmd == 'STOP':
 					break
 				elif '=' in basic_tail or '=' in basic_cmd:
 					exec(self.code[line_num], self.variables)
@@ -744,20 +737,8 @@ class BASIC(cmd.Cmd):
 			'EXP': math.exp, 'INT': int, 'LOG': math.log, 'ORD': ord, 'RND': RND, 'SIN': math.sin, 
 			'SQR': math.sqrt, 'TAB': TAB, 'TAN': math.tan}
 
-		# Define lowcase commands using mapping from capital commands	
-		# self.do_save = self.do_SAVE
-		# self.do_catalog = self.do_CATALOG
-		# self.do_unsave = self.do_UNSAVE
-		# self.do_run = self.do_RUN
-		# self.do_rename = self.do_RENAME
-		# self.do_old = self.do_OLD
-		# self.do_scratch = self.do_SCRATCH
-		# self.do_nodebug = self.do_NODEBUG
-		# self.do_debug = self.do_DEBUG
-
-		# for docmd in dir( self):
-		# 	if docmd.startswith("do_"):
-		# 		print( docmd)
+		# Define alternative commands which can be used for simultaneously.
+		self.do_EXIT = self.do_BYE
 
 		"lowercase keyword will be avaiblae by mapping from uppercase to lowercase cmd"
 		docmds = [docmd for docmd in dir(self) if docmd.startswith('do_')]
