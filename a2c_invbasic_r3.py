@@ -1,7 +1,3 @@
-# Python Hangul Basic ver. org+0.2 
-# Upgraded by Sungjin Kim (2014-11-27)
-# Originated by Craig "Ichabod" O'Brien    
-#
 # Python 3.0 must be used because of on-the-fly dictionay deleting 
 # The base source can be founded in the following link as basic.zip
 # http://www.python-forum.org/viewtopic.php?f=11&t=603 
@@ -500,155 +496,6 @@ class BASIC(cmd.Cmd):
 		for line_num in line_nums:
 			print(line_num, self.code[line_num])
 		print()
-
-	def do_LIST_ENG(self, line):
-		"""
-		do_LIST_ENG(line)
-		It calls do_LIST_ENG_LEFT or LIST_ENG_RIGHT
-		depeding on self.inverse flag.
-		Then, do_LIST_ENG_LEFT will be moved to _do_LIST_ENG_LEFT for hiddening.
-
-		Parameters:
-		line: The command line entered by the user. (str)
-		"""
-		if self.inverse == False:
-			self._do_LIST_ENG_LEFT(line)
-		else:
-			self._do_LIST_ENG_RIGHT(line)
-
-	def _do_LIST_ENG_LEFT(self, line):
-		"""
-		_do_LIST_ENG_LEFT(line)
-		Handle requests to print the program.
-		If hangul keyword is finding, it is changed 
-		to the correspoding english keyword such as print to 찍어라.
-		* do_LIST_ENG calls do_LIST_ENG_LEFT or LIST_ENG_RIGHT
-		  depeding on self.inverse flag.
-		  Then, do_LIST_ENG_LEFT will be moved to _do_LIST_ENG_LEFT for hiddening.
-
-		Parameters:
-		line: The command line entered by the user. (str)
-		"""
-		# print the lines in order
-		line_nums = sorted(self.code.keys())
-		print()
-		for line_num in line_nums:
-			basic_cmd, basic_tail = self.line_split(self.code[line_num])
-			#The original statement is shown for reference.
-			# print('[ORG]', line_num, basic_cmd, basic_tail)
-			try:
-				idx = self.keywords['kor'].index(basic_cmd)
-				basic_cmd = self.keywords['eng'][ idx]
-				#DEBUG: how to changed idx is recorded.
-				#print( idx, basic_cmd)
-			except ValueError:
-				"The correspoding keywords are not supported yet"
-				basic_cmd = basic_cmd
-			print(line_num, basic_cmd, basic_tail)
-		print()
-
-	def _do_LIST_ENG_RIGHT(self, line):
-		"""
-		_do_LIST_ENG_RIGHT(line)
-		Handle requests to print the program.
-		If hangul keyword is finding, it is changed 
-		to the correspoding english keyword such as print to 찍어라.
-		* do_LIST_ENG calls do_LIST_ENG_LEFT or LIST_ENG_RIGHT
-		  depeding on self.inverse flag.
-		  Then, do_LIST_ENG_LEFT will be moved to _do_LIST_ENG_LEFT for hiddening.
-
-		Parameters:
-		line: The command line entered by the user. (str)
-		"""
-		# print the lines in order
-		line_nums = sorted(self.code.keys())
-		print()
-		for line_num in line_nums:
-			basic_cmd, basic_tail = self.line_split(self.code[line_num])
-			#The original statement is shown for reference.
-			# print('[ORG]', line_num, basic_cmd, basic_tail)
-			try:
-				idx = self.keywords['kor'].index(basic_cmd)
-				basic_cmd = self.keywords['eng'][ idx]
-				#DEBUG: how to changed idx is recorded.
-				#print( idx, basic_cmd)
-			except ValueError:
-				"The correspoding keywords are not supported yet"
-				basic_cmd = basic_cmd
-			# The prining order is different.
-			print(line_num, basic_tail, basic_cmd)
-		print()
-
-	def do_LIST_KOR(self, line):
-		"""
-		do_LIST_KOR(line)
-		It calls do_LIST_KOR_LEFT or LIST_KOR_RIGHT
-		depeding on self.inverse flag.
-
-		Parameters:
-		line: The command line entered by the user. (str)
-		"""
-		if self.inverse == False:
-			self._do_LIST_KOR_LEFT(line)
-		else:
-			self._do_LIST_KOR_RIGHT(line)
-
-	def _do_LIST_KOR_LEFT(self, line):
-		"""
-		_do_LIST_KOR_LEFT(line)
-		Handle requests to print the program.
-		If hangul keyword is finding, it is changed 
-		to the correspoding english keyword such as from 찍어라 to print.
-
-		Parameters:
-		line: The command line entered by the user. (str)
-		"""
-		# print the lines in order
-		line_nums = sorted(self.code.keys())
-		print()
-		for line_num in line_nums:
-			basic_cmd, basic_tail = self.line_split(self.code[line_num])
-			#The original statement is shown for reference.
-			# print('[ORG]', line_num, basic_cmd, basic_tail)
-			try:
-				idx = self.keywords['eng'].index(basic_cmd)
-				basic_cmd = self.keywords['kor'][ idx]
-				#DEBUG: how to changed idx is recorded.
-				#print( idx, basic_cmd)
-			except ValueError:
-				"The correspoding keywords are not supported yet"
-				basic_cmd = basic_cmd
-			print(line_num, basic_cmd, basic_tail)
-		print()
-
-	def _do_LIST_KOR_RIGHT(self, line):
-		"""
-		_do_LIST_KOR_RIGHT(line)
-		Handle requests to print the program.
-		If hangul keyword is finding, it is changed 
-		to the correspoding english keyword such as from 찍어라 to print.
-
-		Parameters:
-		line: The command line entered by the user. (str)
-		"""
-		# print the lines in order
-		line_nums = sorted(self.code.keys())
-		print()
-		for line_num in line_nums:
-			basic_cmd, basic_tail = self.line_split(self.code[line_num])
-			#The original statement is shown for reference.
-			# print('[ORG]', line_num, basic_cmd, basic_tail)
-			try:
-				idx = self.keywords['eng'].index(basic_cmd)
-				basic_cmd = self.keywords['kor'][ idx]
-				#DEBUG: how to changed idx is recorded.
-				#print( idx, basic_cmd)
-			except ValueError:
-				"The correspoding keywords are not supported yet"
-				basic_cmd = basic_cmd
-			# The prining order is different.
-			print(line_num, basic_tail, basic_cmd)
-		print()
 			
 	def do_NEW(self, line):
 		"""
@@ -946,7 +793,6 @@ class BASIC(cmd.Cmd):
 		except IndexError:
 			# blank tail for parameterless commands
 			line_cmd = line.rsplit(None, 1)[0].upper()
-			line_tail = ''
 		
 		return line_cmd, line_tail
 
@@ -998,10 +844,6 @@ class BASIC(cmd.Cmd):
 		#print( "Remapping to lowercase commands")
 		#print( docmds)
 
-		#keyword matching is used.
-		self.keywords = {'eng':[], 'kor':[]}
-		self.keywords['eng'] = ['PRINT', 'INPUT']
-		self.keywords['kor'] = ['찍어라', '넣어라']
 
 def RND(n):
 	"""

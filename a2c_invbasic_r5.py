@@ -1,7 +1,3 @@
-# Python Hangul Basic ver. org+0.2 
-# Upgraded by Sungjin Kim (2014-11-27)
-# Originated by Craig "Ichabod" O'Brien    
-#
 # Python 3.0 must be used because of on-the-fly dictionay deleting 
 # The base source can be founded in the following link as basic.zip
 # http://www.python-forum.org/viewtopic.php?f=11&t=603 
