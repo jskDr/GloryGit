@@ -485,7 +485,97 @@ class BASIC(cmd.Cmd):
 			print(HELP[line.strip()])
 		else:
 			print('\nTHERE IS NO HELP FOR THAT TOPIC.\n')
-				
+	
+	def do_LS(self, line):
+		"""
+		do_LS(line)
+		Hanle requests to translate and print the program.
+		Translate from lang1 to lang2
+
+		Parameters:
+		line -> lang1, lang2
+		"""
+		if line == '-h':
+			print( 'ls kor, eng')
+			print( 'ls eng, kor')
+		elif line == '':
+			self.do_LIST( line)
+		else:
+			try:
+				lang1, lang2 = line.split(',')
+				self.LS( lang1.strip(), lang2.strip())
+			except ValueError:
+				print( 'Command error: Type LS -h')
+
+	def LS(self, lang1, lang2):
+		if self.inverse == False:
+			self.LS_LEFT( lang1, lang2)
+		else:
+			self.LS_RIGHT( lang1, lang2)
+
+	def LS_LEFT(self, lang1, lang2):
+		"""
+		_do_LIST_ENG_LEFT(line)
+		Handle requests to print the program.
+		If hangul keyword is finding, it is changed 
+		to the correspoding english keyword such as print to 찍어라.
+		* do_LIST_ENG calls do_LIST_ENG_LEFT or LIST_ENG_RIGHT
+		  depeding on self.inverse flag.
+		  Then, do_LIST_ENG_LEFT will be moved to _do_LIST_ENG_LEFT for hiddening.
+
+		Parameters:
+		line: The command line entered by the user. (str)
+		"""
+		# print the lines in order
+		line_nums = sorted(self.code.keys())
+		print()
+		for line_num in line_nums:
+			basic_cmd, basic_tail = self.line_split(self.code[line_num])
+			#The original statement is shown for reference.
+			# print('[ORG]', line_num, basic_cmd, basic_tail)
+			try:
+				idx = self.keywords[ lang1].index(basic_cmd)
+				basic_cmd = self.keywords[ lang2][ idx]
+				#DEBUG: how to changed idx is recorded.
+				#print( idx, basic_cmd)
+			except ValueError:
+				"The correspoding keywords are not supported yet"
+				basic_cmd = basic_cmd
+			print(line_num, basic_cmd, basic_tail)
+		print()
+
+	def LS_RIGHT(self, lang1, lang2):
+		"""
+		_do_LIST_ENG_RIGHT(line)
+		Handle requests to print the program.
+		If hangul keyword is finding, it is changed 
+		to the correspoding english keyword such as print to 찍어라.
+		* do_LIST_ENG calls do_LIST_ENG_LEFT or LIST_ENG_RIGHT
+		  depeding on self.inverse flag.
+		  Then, do_LIST_ENG_LEFT will be moved to _do_LIST_ENG_LEFT for hiddening.
+
+		Parameters:
+		line: The command line entered by the user. (str)
+		"""
+		# print the lines in order
+		line_nums = sorted(self.code.keys())
+		print()
+		for line_num in line_nums:
+			basic_cmd, basic_tail = self.line_split(self.code[line_num])
+			#The original statement is shown for reference.
+			# print('[ORG]', line_num, basic_cmd, basic_tail)
+			try:
+				idx = self.keywords[lang1].index(basic_cmd)
+				basic_cmd = self.keywords[lang2][ idx]
+				#DEBUG: how to changed idx is recorded.
+				#print( idx, basic_cmd)
+			except ValueError:
+				"The correspoding keywords are not supported yet"
+				basic_cmd = basic_cmd
+			# The prining order is different.
+			print(line_num, basic_tail, basic_cmd)
+		print()
+
 	def do_LIST(self, line):
 		"""
 		do_LIST(line)
@@ -999,9 +1089,10 @@ class BASIC(cmd.Cmd):
 		#print( docmds)
 
 		#keyword matching is used.
-		self.keywords = {'eng':[], 'kor':[]}
-		self.keywords['eng'] = ['PRINT', 'INPUT', 'DATA', 'DEF', 'DIM', 'END']
-		self.keywords['kor'] = ['찍어라', '넣어라', '데이타', '정의', '크기', '끝내라']
+		self.keywords = {'eng':[], 'kor':[], 'chn': []}
+		self.keywords['eng'] = ['PRINT', 'INPUT', 'DATA', 'DEF', 'DIM', 'END', 'IF', 'FOR']
+		self.keywords['kor'] = ['찍어라', '넣어라', '데이타', '정의', '크기', '끝내라', '만약', '돌려라']
+		self.keywords['chn'] = ['打印', '輸入', '材料', '定義', '個兒', '片尾', '万一', '期間']
 
 def RND(n):
 	"""
