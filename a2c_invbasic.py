@@ -406,7 +406,7 @@ class BASIC(cmd.Cmd):
 		else:
 			print()
 	
-	def default(self, line):
+	def _default_r0(self, line):
 		"""
 		default(line)
 		Handle unhandled commands.
@@ -432,6 +432,54 @@ class BASIC(cmd.Cmd):
 				print('\nNO PROGRAM STARTED. PLEASE USE NEW TO START A PROGRAM.\n')
 		except ValueError:
 			print('\nERROR: INVALID COMMAND.\n')
+
+	def default(self, line):
+		"""
+		default(line)
+		Handle unhandled commands.
+		
+		[Original] If there's a line number, assume it is part of the BASIC code. Otherwise 
+		give an error to the user.
+
+		[2014-12-14] Korea commands can be used. Commands of ['종료', '목록'] are used.
+		
+		Parameter:
+		line: The command line entered by the user. (str)
+		"""
+		# check for valid line of BASIC code
+		try:
+			# check for program in progress
+			# First, general commands are executed. 
+			# Then, code is written. 
+			if line == '종료':
+				return self.do_BYE( None)
+			elif line == '목록':
+				self.do_CATALOG( None)
+			elif line.split()[0].strip() == '신규':
+				self.do_NEW( line.split(None, 1)[1])
+			elif line == '저장':
+				self.do_SAVE( None)
+			elif line == '리스트':
+				self.do_LIST( None)
+			elif line == '실행':
+				words = line.split()
+				if len(words) == 1:
+					self.do_RUN( None)
+				else:
+					self.do_RUN( line.split(None, 1)[1])
+			elif self.code_name:
+				line_num = int(line.split()[0])
+				# check for adding or deleting a line
+				try:
+					basic = line.split(None, 1)[1]
+					self.code[line_num] = line.split(None, 1)[1]
+				except IndexError:
+					del self.code[line_num]
+			else:
+				print('\nNO PROGRAM STARTED. PLEASE USE NEW TO START A PROGRAM.\n')
+		except ValueError:
+			print('\nERROR: INVALID COMMAND.\n')
+
 	
 	def do_BYE(self, line):
 		"""
