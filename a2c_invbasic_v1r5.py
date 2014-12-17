@@ -836,35 +836,17 @@ class BASIC(cmd.Cmd):
 		"""
 		self.inverse = False
 
-	def do_MODE( self, line):
+	def do_STATUS( self, line):
 		"""
-		do_MODE(line)
+		do_STATUS(line)
 		All status paramters are displayed.
 		
 		Parameters:
 		line: The command line entered by the user. (str)
 		"""
-		print( '[MODE]')
-		print( 'Current Mode :', self.mode)
-		print( 'All Modes = [{}]'.format( ', '.join(self.all_modes)))
-		
 		print( 'Flag of inverse:', self.inverse)
 
-	def do_MODETO( self, line):
-		"""
-		do_MOTETO( line)
-		The mode is changed to new mode.
-
-		Parameters:
-		line: The new mode is entered by an user.
-		"""
-
-		if line in self.all_modes:
-			print( 'The mode is changed from {0} to {1}.'.format(self.mode, line))
-			self.mode = line	
-		else:
-			print( 'Type valed modes such as [{}]'.format( ', '.join( self.all_modes)))
-
+	
 	def do_OLD(self, line):
 		"""
 		do_OLD(line)
@@ -1136,10 +1118,6 @@ class BASIC(cmd.Cmd):
 			'EXP': math.exp, 'INT': int, 'LOG': math.log, 'ORD': ord, 'RND': RND, 'SIN': math.sin, 
 			'SQR': math.sqrt, 'TAB': TAB, 'TAN': math.tan}
 		"Code will be read from the stat point."
-		
-		"Set up modes"
-		self.all_modes = ['eng_and_kor_mixed', 'eng_only', 'kor_only', 'kor_inv_only']
-		self.mode = 'eng_and_kor_mixed' # or self.all_modes[0]
 		self.inverse = False
 
 		# Define lowcase commands using mapping from capital commands	
