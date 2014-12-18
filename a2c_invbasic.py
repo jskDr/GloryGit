@@ -861,9 +861,60 @@ class BASIC(cmd.Cmd):
 
 		if line in self.all_modes:
 			print( 'The mode is changed from {0} to {1}.'.format(self.mode, line))
+
+			# A translated codes will be shown. 
+			# Real translation prossing will be applied
+			# Mode mapping tool is used by dictionary.	
+			print( 'The translated code is as follows:')
+			mode_map = {'eng_kor_mixed': 'eng', 'kor_only': 'kor', 'eng_only': 'eng' , 'kor_inv_only': 'kor'}
+			self.Mode_Change_LEFT( mode_map[self.mode], mode_map[line])
 			self.mode = line	
 		else:
-			print( 'Type valed modes such as [{}]'.format( ', '.join( self.all_modes)))
+			print( 'Type valild modes in [{}]'.format( ', '.join( self.all_modes)))
+
+	def Mode_Change_LEFT(self, lang1, lang2):
+		"""
+		_do_LIST_ENG_LEFT(line)
+		Handle requests to print the program.
+		If hangul keyword is finding, it is changed 
+		to the correspoding english keyword such as print to 찍어라.
+		* do_LIST_ENG calls do_LIST_ENG_LEFT or LIST_ENG_RIGHT
+		  depeding on self.inverse flag.
+		  Then, do_LIST_ENG_LEFT will be moved to _do_LIST_ENG_LEFT for hiddening.
+
+		Parameters:
+		line: The command line entered by the user. (str)
+		"""
+		# print the lines in order
+		line_nums = sorted(self.code.keys())
+		print()
+		for line_num in line_nums:
+			basic_cmd, basic_tail = self.line_split(self.code[line_num])
+			#The original statement is shown for reference.
+			# print('[ORG]', line_num, basic_cmd, basic_tail)
+			try:
+				idx = self.keywords[ lang1].index(basic_cmd)
+				basic_cmd = self.keywords[ lang2][ idx]
+				#DEBUG: how to changed idx is recorded.
+				#print( idx, basic_cmd)
+			except ValueError:
+				"The correspoding keywords are not supported yet"
+				basic_cmd = basic_cmd
+			
+			#list.index can be used
+			if basic_cmd == 'IF':
+				basic_tail = basic_tail.replace( '이라면', 'THEN')
+			elif basic_cmd == '만약':
+				basic_tail = basic_tail.replace( 'THEN', '이라면')
+			elif basic_cmd == 'FOR':
+				basic_tail = basic_tail.replace( '부터', 'TO')
+			elif basic_cmd == '돌려라':
+				basic_tail = basic_tail.replace( 'TO', '부터')
+
+			print(line_num, basic_cmd, basic_tail)
+			# The code is also changed to the new mode language
+			self.code[line_num] = " ".join( [basic_cmd, basic_tail])
+		print()
 
 	def do_OLD(self, line):
 		"""
@@ -1138,24 +1189,13 @@ class BASIC(cmd.Cmd):
 		"Code will be read from the stat point."
 		
 		"Set up modes"
-		self.all_modes = ['eng_and_kor_mixed', 'eng_only', 'kor_only', 'kor_inv_only']
-		self.mode = 'eng_and_kor_mixed' # or self.all_modes[0]
+		self.all_modes = ['eng_kor_mixed', 'eng_only', 'kor_only', 'kor_inv_only', 'chn_only']
+		self.mode = 'kor_only' # or self.all_modes[0]
+		self.mode2ls = {'eng_kor_mixed':'eng', 'eng_only':'eng', 'kor_only':'kor',\
+						 'kor_inv_only':'kor', 'chn_only':'chn'}
 		self.inverse = False
 
-		# Define lowcase commands using mapping from capital commands	
-		# self.do_save = self.do_SAVE
-		# self.do_catalog = self.do_CATALOG
-		# self.do_unsave = self.do_UNSAVE
-		# self.do_run = self.do_RUN
-		# self.do_rename = self.do_RENAME
-		# self.do_old = self.do_OLD
-		# self.do_scratch = self.do_SCRATCH
-		# self.do_nodebug = self.do_NODEBUG
-		# self.do_debug = self.do_DEBUG
-
-		# for docmd in dir( self):
-		# 	if docmd.startswith("do_"):
-		# 		print( docmd)
+		"One command for exiting is added."
 		self.do_EXIT = self.do_BYE
 
 		"lowercase keyword will be avaiblae by mapping from uppercase to lowercase cmd"
@@ -1174,9 +1214,14 @@ class BASIC(cmd.Cmd):
 
 		#keyword matching is used.
 		self.keywords = {'eng':[], 'kor':[], 'chn': []}
-		self.keywords['eng'] = ['PRINT', 'INPUT', 'DATA', 'DEF', 'DIM', 'END', 'IF', 'FOR', 'NEXT']
-		self.keywords['kor'] = ['찍어라', '넣어라', '데이타', '정의', '크기', '끝내라', '만약', '돌려라', '다음']
-		self.keywords['chn'] = ['打印', '輸入', '材料', '定義', '個兒', '片尾', '万一', '期間', '下次']
+		self.keywords['eng'] = ['PRINT', 'INPUT', 'DATA', 'DEF', 'DIM', 'END', 'IF', 'FOR', 'NEXT', 'GOTO', 'THEN', 'TO', 'STEP']
+		self.keywords['kor'] = ['찍어라', '넣어라', '데이타', '정의', '크기', '끝내라', '만약', '돌려라', '다음', '가라', '이라면', '부터', '단계']
+		self.keywords['chn'] = ['打印', '輸入', '材料', '定義', '個兒', '片尾', '万一', '期間', '下次', '走', '那时', '부터', '단계']
+
+		"We will show the current mode and some initial conditions if any."
+		self.do_MODE( None)
+		print('')
+
 
 def RND(n):
 	"""

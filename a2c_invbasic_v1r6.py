@@ -861,9 +861,19 @@ class BASIC(cmd.Cmd):
 
 		if line in self.all_modes:
 			print( 'The mode is changed from {0} to {1}.'.format(self.mode, line))
+
+			# A translated codes will be shown. 
+			# Real translation prossing will be applied
+
+			mode_map = {'eng_kor_mixed': 'eng', 'kor_only': 'kor', 'eng_only': 'eng' , 'kor_inv_only': 'kor'}
+
+			self.do_LS( mode_map[self.mode], mode_map[line])
+
 			self.mode = line	
+
+
 		else:
-			print( 'Type valed modes such as [{}]'.format( ', '.join( self.all_modes)))
+			print( 'Type valild modes in [{}]'.format( ', '.join( self.all_modes)))
 
 	def do_OLD(self, line):
 		"""
@@ -1138,8 +1148,8 @@ class BASIC(cmd.Cmd):
 		"Code will be read from the stat point."
 		
 		"Set up modes"
-		self.all_modes = ['eng_and_kor_mixed', 'eng_only', 'kor_only', 'kor_inv_only']
-		self.mode = 'eng_and_kor_mixed' # or self.all_modes[0]
+		self.all_modes = ['eng_kor_mixed', 'eng_only', 'kor_only', 'kor_inv_only']
+		self.mode = 'eng_kor_mixed' # or self.all_modes[0]
 		self.inverse = False
 
 		# Define lowcase commands using mapping from capital commands	

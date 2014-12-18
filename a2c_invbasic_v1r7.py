@@ -900,17 +900,6 @@ class BASIC(cmd.Cmd):
 			except ValueError:
 				"The correspoding keywords are not supported yet"
 				basic_cmd = basic_cmd
-			
-			#list.index can be used
-			if basic_cmd == 'if':
-				basic_tail = basic_tail.replace( '이라면', 'THEN')
-			elif basic_cmd == '만약':
-				basic_tail = basic_tail.replace( 'THEN', '이라면')
-			elif basic_cmd == 'for':
-				basic_tail = basic_tail.replace( '부터', 'TO')
-			elif basic_cmd == '돌려라':
-				basic_tail = basic_tail.replace( 'TO', '부터')
-
 			print(line_num, basic_cmd, basic_tail)
 			# The code is also changed to the new mode language
 			self.code[line_num] = " ".join( [basic_cmd, basic_tail])
@@ -1214,9 +1203,9 @@ class BASIC(cmd.Cmd):
 
 		#keyword matching is used.
 		self.keywords = {'eng':[], 'kor':[], 'chn': []}
-		self.keywords['eng'] = ['PRINT', 'INPUT', 'DATA', 'DEF', 'DIM', 'END', 'IF', 'FOR', 'NEXT', 'GOTO', 'THEN', 'TO', 'STEP']
-		self.keywords['kor'] = ['찍어라', '넣어라', '데이타', '정의', '크기', '끝내라', '만약', '돌려라', '다음', '가라', '이라면', '부터', '단계']
-		self.keywords['chn'] = ['打印', '輸入', '材料', '定義', '個兒', '片尾', '万一', '期間', '下次', '走', '那时', '부터', '단계']
+		self.keywords['eng'] = ['PRINT', 'INPUT', 'DATA', 'DEF', 'DIM', 'END', 'IF', 'FOR', 'NEXT', 'GOTO', 'THEN']
+		self.keywords['kor'] = ['찍어라', '넣어라', '데이타', '정의', '크기', '끝내라', '만약', '돌려라', '다음', '가라', '이라면']
+		self.keywords['chn'] = ['打印', '輸入', '材料', '定義', '個兒', '片尾', '万一', '期間', '下次', '走', '那时']
 
 		"We will show the current mode and some initial conditions if any."
 		self.do_MODE( None)
