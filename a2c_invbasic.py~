@@ -21,6 +21,7 @@ import re
 import sys
 
 HELP = {}
+HELP_KOR = {} # 한글 버젼의 헬프를 만든다. HELP_KOR이나 도움말을 치면 나오도록 한다.
 HELP[''] = """
 THE FOLLOWING COMMANDS ARE AVAILABLE IN THE ICHABOD BASIC INTERPRETER. FOR
 HELP ON COMMANDS ALLOWED IN ICHABOD BASIC PROGRAMS, TYPE 'HELP BASIC'.
@@ -39,6 +40,25 @@ SCRATCH: DELETE THE CURRENT PROGRAM
 UNSAVE: PERMANENTLY DELETE THE CURRENT PROGRAM.
 FOR MORE INFORMATION ON A COMMAND TYPE HELP FOR THAT COMMAND.
 """
+HELP_KOR[''] = """
+파이썬 한글 베이직에서 사용되는 명령어를 보여준다.
+베이직에 사용되는 키워드를 알고 싶으면 HELP_KOR( 키워드)를 치면 된다.
+도움말 (HELP_KOR): SHOW HELP FOR A SPECIFIED TOPIC
+종료 (BYE): 파이썬 한글 베이직 환경을 마친다.
+목록 (CATALOG): 불러들일 수 있는 베이직 프로그램들을 보여준다.
+디버그 (DEBUG): SET DEBUGGING TO SHOW LINE NUMBER AND VARIABLE TRACE
+리스트 (LIST): 현재 프로그램의 내용을 보여준다.
+신규 (NEW): 정해준 이름으로 새로운 프로그램을 시작한다.
+디버그오프 (NODEBUG): TURN OFF DEGUGGING
+이전! (OLD): LOAD AN OLD PROGRAM
+이름변경! (RENAME): RENAME THE CURRENT PROGRAM
+실행 (RUN): 현재 작성되어 있는 프로그램을 실행한다.
+저장 (SAVE): 신규, OLD, RENAME으로 지정된 이름으로 저장한다.
+소거 (SCRATCH): DELETE THE CURRENT PROGRAM
+미저장 (UNSAVE): PERMANENTLY DELETE THE CURRENT PROGRAM.
+각 명령어에 대한 세부적인 정보를 원하면 '도움말 커맨드'를 친다.
+"""
+
 HELP['BASIC'] = """
 EACH LINE IN THE PROGRAM MUST START WITH A LINE NUMBER. LINES ARE PROCESSED
 IN THE ORDER OF THEIR LINE NUMBERS, EXCEPT AS MODIFIED BY GOTO, GOSUB, NEXT, 
@@ -458,8 +478,25 @@ class BASIC(cmd.Cmd):
 				return self.do_BYE( None)
 			elif line == '목록':
 				self.do_CATALOG( None)
-			elif line.split()[0].strip() == '신규':
+			elif line.split()[0].strip() == '신규': # NEW
 				self.do_NEW( line.split(None, 1)[1])
+			elif line.split()[0].strip() == '이전': # OLD
+				self.do_OLD( line.split(None, 1)[1])
+			elif line.split()[0].strip() == '디버그': # DEBUG
+				self.do_DEBUG( line.split(None, 1)[1])
+			elif line.split()[0].strip() == '이름변경': 
+				self.do_RENAME( line.split(None, 1)[1])
+			elif line.split()[0].strip() == '도움말': 
+				if len(line.split()) > 1:
+					self.do_HELP_KOR( line.split(None, 1)[1])
+				else:
+					self.do_HELP_KOR( '')
+			elif line == '소거': 
+				self.do_SCRATCH( None)
+			elif line == '미저장': 
+				self.do_UNSAVE( None)
+			elif line == '디버그오프': #NODEBUG
+				self.do_NODEBUG( None)
 			elif line == '저장':
 				self.do_SAVE( None)
 			elif line == '리스트':
@@ -536,6 +573,20 @@ class BASIC(cmd.Cmd):
 			print(HELP[line.strip()])
 		else:
 			print('\nTHERE IS NO HELP FOR THAT TOPIC.\n')
+
+	def do_HELP_KOR(self, line):
+		"""
+		do_HELP_KOR(line)
+		한글로 도움말을 보여준다.
+		
+		Parameters:
+		line: The command line entered by the user. (str)
+		"""
+		if line.strip() in HELP_KOR:
+			print(HELP_KOR[line.strip()])
+		else:
+			print('\n주어진 주제에 대해서는 한글 도움말이 없다.\n')
+
 	
 	def do_LS(self, line):
 		"""
@@ -850,6 +901,10 @@ class BASIC(cmd.Cmd):
 		
 		print( 'Flag of inverse:', self.inverse)
 
+		if self.mode == 'kor_only':
+			print( '한글 전용 모드이다.')
+			print( '도움말을 입력하면 세부 정보를 보여준다.')
+
 	def do_MODETO( self, line):
 		"""
 		do_MOTETO( line)
@@ -902,11 +957,11 @@ class BASIC(cmd.Cmd):
 				basic_cmd = basic_cmd
 			
 			#list.index can be used
-			if basic_cmd == 'if':
+			if basic_cmd == 'IF':
 				basic_tail = basic_tail.replace( '이라면', 'THEN')
 			elif basic_cmd == '만약':
 				basic_tail = basic_tail.replace( 'THEN', '이라면')
-			elif basic_cmd == 'for':
+			elif basic_cmd == 'FOR':
 				basic_tail = basic_tail.replace( '부터', 'TO')
 			elif basic_cmd == '돌려라':
 				basic_tail = basic_tail.replace( 'TO', '부터')
