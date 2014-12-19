@@ -43,19 +43,19 @@ FOR MORE INFORMATION ON A COMMAND TYPE HELP FOR THAT COMMAND.
 HELP_KOR[''] = """
 파이썬 한글 베이직에서 사용되는 명령어를 보여준다.
 베이직에 사용되는 키워드를 알고 싶으면 HELP_KOR( 키워드)를 치면 된다.
-도움말 (HELP_KOR): 키워드에 해당하는 도움말을 제공한다.
+도움말 (HELP_KOR): SHOW HELP FOR A SPECIFIED TOPIC
 종료 (BYE): 파이썬 한글 베이직 환경을 마친다.
 목록 (CATALOG): 불러들일 수 있는 베이직 프로그램들을 보여준다.
-디버그 (DEBUG): 행번호를 보여주고 변수 상태를 확인할 수 있도록 한다.
+디버그 (DEBUG): SET DEBUGGING TO SHOW LINE NUMBER AND VARIABLE TRACE
 리스트 (LIST): 현재 프로그램의 내용을 보여준다.
 신규 (NEW): 정해준 이름으로 새로운 프로그램을 시작한다.
-디버그오프 (NODEBUG): 디버깅 모드를 종료한다.
-이전 (OLD): 이전 프로그램을 불러온다.
-이름변경 (RENAME): 현재 프로그램의 이름을 바꾼다.
+디버그오프 (NODEBUG): TURN OFF DEGUGGING
+이전 (OLD): LOAD AN OLD PROGRAM
+이름변경 (RENAME): RENAME THE CURRENT PROGRAM
 실행 (RUN): 현재 작성되어 있는 프로그램을 실행한다.
 저장 (SAVE): 신규, OLD, RENAME으로 지정된 이름으로 저장한다.
-소거 (SCRATCH): 현재의 코드를 지운다.
-미저장 (UNSAVE): 파일에 있는 현재의 코드를 지운다.
+소거 (SCRATCH): DELETE THE CURRENT PROGRAM
+미저장 (UNSAVE): PERMANENTLY DELETE THE CURRENT PROGRAM.
 각 명령어에 대한 세부적인 정보를 원하면 '도움말 커맨드'를 친다.
 """
 
@@ -921,9 +921,7 @@ class BASIC(cmd.Cmd):
 			# Real translation prossing will be applied
 			# Mode mapping tool is used by dictionary.	
 			print( 'The translated code is as follows:')
-			mode_map = {'eng_kor_mixed': 'eng', 'kor_only': 'kor', \
-					'eng_only': 'eng' , 'kor_inv_only': 'kor', \
-					'chn_only': 'chn'}
+			mode_map = {'eng_kor_mixed': 'eng', 'kor_only': 'kor', 'eng_only': 'eng' , 'kor_inv_only': 'kor'}
 			self.Mode_Change_LEFT( mode_map[self.mode], mode_map[line])
 			self.mode = line	
 		else:
@@ -945,7 +943,6 @@ class BASIC(cmd.Cmd):
 		# print the lines in order
 		line_nums = sorted(self.code.keys())
 		print()
-		print('Translation is processing from {0} to {1}'.format( lang1, lang2))
 		for line_num in line_nums:
 			basic_cmd, basic_tail = self.line_split(self.code[line_num])
 			#The original statement is shown for reference.
@@ -960,22 +957,19 @@ class BASIC(cmd.Cmd):
 				basic_cmd = basic_cmd
 			
 			#list.index can be used
-			mult_cmds = [ ['IF', 'THEN'], ['FOR', 'TO', 'STEP']]
-			for mc in mult_cmds:
-				if basic_cmd == self.mc_lang(mc[0], lang2):
-					for mcc in mc[1:]:
-						m1 = self.mc_lang(mcc, lang1)
-						m2 = self.mc_lang(mcc, lang2)
-						basic_tail = basic_tail.replace( m1, m2)
+			if basic_cmd == 'IF':
+				basic_tail = basic_tail.replace( '이라면', 'THEN')
+			elif basic_cmd == '만약':
+				basic_tail = basic_tail.replace( 'THEN', '이라면')
+			elif basic_cmd == 'FOR':
+				basic_tail = basic_tail.replace( '부터', 'TO')
+			elif basic_cmd == '돌려라':
+				basic_tail = basic_tail.replace( 'TO', '부터')
 
 			print(line_num, basic_cmd, basic_tail)
 			# The code is also changed to the new mode language
 			self.code[line_num] = " ".join( [basic_cmd, basic_tail])
 		print()
-
-	def mc_lang( self, cmd, lang):
-		idx = self.keywords[ 'eng'].index(cmd)
-		return self.keywords[ lang][ idx]
 
 	def do_OLD(self, line):
 		"""
