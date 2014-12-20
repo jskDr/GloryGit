@@ -1,6 +1,5 @@
 # Python Hangul Basic ver. org+0.2 
-# Upgraded by Sungjin Kim (2014-11-27), 
-# This upgraded part follows MIT Licences (https://en.wikipedia.org/wiki/MIT_License).
+# Upgraded by Sungjin Kim (2014-11-27)
 # Originated by Craig "Ichabod" O'Brien    
 #
 # Python 3.0 must be used because of on-the-fly dictionay deleting 
@@ -48,14 +47,14 @@ HELP_KOR[''] = """
 종료 (BYE): 파이썬 한글 베이직 환경을 마친다.
 목록 (CATALOG): 불러들일 수 있는 베이직 프로그램들을 보여준다.
 디버그 (DEBUG): 행번호를 보여주고 변수 상태를 확인할 수 있도록 한다.
-내용 (LIST): 현재 프로그램의 내용을 보여준다.
+리스트 (LIST): 현재 프로그램의 내용을 보여준다.
 신규 (NEW): 정해준 이름으로 새로운 프로그램을 시작한다.
 디버그오프 (NODEBUG): 디버깅 모드를 종료한다.
 이전 (OLD): 이전 프로그램을 불러온다.
 이름변경 (RENAME): 현재 프로그램의 이름을 바꾼다.
 실행 (RUN): 현재 작성되어 있는 프로그램을 실행한다.
 저장 (SAVE): 신규, OLD, RENAME으로 지정된 이름으로 저장한다.
-제거 (SCRATCH): 현재의 코드를 지운다.
+소거 (SCRATCH): 현재의 코드를 지운다.
 미저장 (UNSAVE): 파일에 있는 현재의 코드를 지운다.
 각 명령어에 대한 세부적인 정보를 원하면 '도움말 커맨드'를 친다.
 """
@@ -492,7 +491,7 @@ class BASIC(cmd.Cmd):
 					self.do_HELP_KOR( line.split(None, 1)[1])
 				else:
 					self.do_HELP_KOR( '')
-			elif line == '삭제': 
+			elif line == '소거': 
 				self.do_SCRATCH( None)
 			elif line == '미저장': 
 				self.do_UNSAVE( None)
@@ -500,7 +499,7 @@ class BASIC(cmd.Cmd):
 				self.do_NODEBUG( None)
 			elif line == '저장':
 				self.do_SAVE( None)
-			elif line == '내용':
+			elif line == '리스트':
 				self.do_LIST( None)
 			elif line == '실행':
 				words = line.split()
@@ -530,7 +529,6 @@ class BASIC(cmd.Cmd):
 		Parameter:
 		line: The command line entered by the user. (str)
 		"""
-		print( "Bye~")
 		return True
 	
 	def do_CATALOG(self, line):
