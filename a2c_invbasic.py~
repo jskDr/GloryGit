@@ -929,10 +929,8 @@ class BASIC(cmd.Cmd):
 			# Real translation prossing will be applied
 			# Mode mapping tool is used by dictionary.	
 			print( 'The translated code is as follows:')
-			mode_map = {'eng_kor_mixed': 'eng', 'kor_only': 'kor', \
-					'eng_only': 'eng' , 'kor_inv_only': 'kor', \
-					'chn_only': 'chn'}
-			self.Mode_Change_LEFT( mode_map[self.mode], mode_map[line])
+
+			self.Mode_Change_LEFT( self.mode_map[self.mode], self.mode_map[line])
 			self.mode = line	
 		else:
 			print( 'Type valild modes in [{}]'.format( ', '.join( self.all_modes)))
@@ -955,6 +953,7 @@ class BASIC(cmd.Cmd):
 		print()
 		print('Translation is processing from {0} to {1}'.format( lang1, lang2))
 		for line_num in line_nums:
+			# In the mode change, no language translation is processed.
 			basic_cmd, basic_tail = self.line_split(self.code[line_num])
 			#The original statement is shown for reference.
 			# print('[ORG]', line_num, basic_cmd, basic_tail)
@@ -981,7 +980,42 @@ class BASIC(cmd.Cmd):
 			self.code[line_num] = " ".join( [basic_cmd, basic_tail])
 		print()
 
+
+	def mc_lang_inv( self, cmd, lang):
+		"""
+		The corresponding english keyword is returned.
+		"""
+		try:
+			idx = self.keywords[ lang].index(cmd)
+			return self.keywords[ 'eng'][ idx]
+		except ValueError:
+			return cmd
+
+	def mct_processing( self, cmd, tail, lang1, lang2):
+		"""
+		It is half-functinoal code, which uses self.func but no self.var.
+		"""
+		#list.index can be used
+		mult_cmds = [ ['IF', 'THEN'], ['FOR', 'TO', 'STEP']]
+		for mc in mult_cmds:
+			mc_cmd = mc[0]
+			mc_app = mc[1:]
+			# Already, cmd is translated.
+			if cmd == self.mc_lang(mc_cmd, lang2):				
+				for mcc in mc_app:
+					m1 = self.mc_lang(mcc, lang1)
+					m2 = self.mc_lang(mcc, lang2)
+					tail = tail.replace( m1, m2)
+		return tail
+
+	def mct_lang_inv( self, cmd, tail, lang):
+		""" line_tail = self.mct_lang_inv( line_cmd, line_tail, lang) """
+		return self.mct_processing( cmd, tail, lang, 'eng')
+
 	def mc_lang( self, cmd, lang):
+		"""
+		The required language keyword is returned.
+		"""
 		idx = self.keywords[ 'eng'].index(cmd)
 		return self.keywords[ lang][ idx]
 
@@ -1042,7 +1076,7 @@ class BASIC(cmd.Cmd):
 			while pointer < len(line_nums):
 				# update line tracking
 				line_num = line_nums[pointer]
-				basic_cmd, basic_tail = self.line_split(self.code[line_num])
+				basic_cmd, basic_tail = self.line_split_langtrans(self.code[line_num])
 				# check for debugging
 				if self.debug:
 					print(line_num, end = ' ')
@@ -1171,10 +1205,30 @@ class BASIC(cmd.Cmd):
 		else:
 			print('\nNO PROGRAM TO UNSAVE\n')
 			
-	def line_split(self, line):
+	def line_split_langtrans(self, line):
 		"""
 		line_rsplit(line)
+		Language translation is considered.
+		
+		Parameters:
+		line: A line of BASIC code. (str)
+		"""
+
+		line_cmd, line_tail = self.line_split(line)
+		lang = self.mode_map[ self.mode]
+		line_cmd = self.mc_lang_inv( line_cmd, lang)
+		line_tail = self.mct_lang_inv( line_cmd, line_tail, lang)
+
+		#print('[Temporary - Runtime translation result]')
+		#print( line_cmd, line_tail)
+
+		return line_cmd, line_tail
+	
+	def line_split(self, line):
+		"""
+		line_rsplit_nolangtrans(line)
 		Split left or right depending on self.inverse
+		Language translation is not considered.
 		
 		Parameters:
 		line: A line of BASIC code. (str)
@@ -1243,7 +1297,7 @@ class BASIC(cmd.Cmd):
 			if line_tail.endswith('를') or line_tail.endswith('을'):
 				line_tail = line_tail[:-1]
 		elif line_cmd == '넣어라':
-			if line_tail.endswith('에':
+			if line_tail.endswith('에'):
 				line_tail = line_tail[:-1]
 
 		return line_cmd, line_tail
@@ -1293,9 +1347,12 @@ class BASIC(cmd.Cmd):
 		self.keywords = {'eng':[], 'kor':[], 'chn': []}
 		self.keywords['eng'] = ['PRINT', 'INPUT', 'DATA', 'DEF', 'DIM', 'END', 'IF', 'FOR', 'NEXT', 'GOTO', 'THEN', 'TO', 'STEP']
 		self.keywords['kor'] = ['찍어라', '넣어라', '데이타', '정의', '크기', '끝내라', '만약', '돌려라', '다음', '가라', '이라면', '부터', '단계']
-		self.keywords['chn'] = ['打印', '輸入', '材料', '定義', '個兒', '片尾', '万一', '期間', '下次', '走', '那时', '부터', '단계']
+		self.keywords['chn'] = ['打印', '輸入', '材料', '定義', '個兒', '片尾', '万一', '期間', '下次', '走', '那时', '到', '阶段']
 
 		"We will show the current mode and some initial conditions if any."
+		self.mode_map = {'eng_kor_mixed': 'eng', 'kor_only': 'kor', \
+					'eng_only': 'eng' , 'kor_inv_only': 'kor', \
+					'chn_only': 'chn'}
 		self.do_MODE( None)
 		print('')
 
