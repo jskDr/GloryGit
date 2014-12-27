@@ -1,3 +1,5 @@
+#-*- coding: utf-8 -*-
+
 # Python Hangul Basic ver. org+0.2 
 # Upgraded by Sungjin Kim (2014-11-27), 
 # This upgraded part follows MIT Licences (https://en.wikipedia.org/wiki/MIT_License).
