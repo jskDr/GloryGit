@@ -484,18 +484,24 @@ class BASIC(cmd.Cmd):
 			elif line == '목록':
 				self.do_CATALOG( None)
 			elif line.split()[0].strip() == '신규': # NEW
-				self.do_NEW( line.split(None, 1)[1])
+				if len(line.strip()) > 1:
+					self.do_NEW( line.split(None, 1)[1])
+				else:
+					print('\nPLEASE ENTER NEW FILE NAME\n')
 			elif line.split()[0].strip() == '이전': # OLD
 				self.do_OLD( line.split(None, 1)[1])
 			elif line.split()[0].strip() == '디버그': # DEBUG
 				self.do_DEBUG( line.split(None, 1)[1])
 			elif line.split()[0].strip() == '이름변경': 
-				self.do_RENAME( line.split(None, 1)[1])
+				if len(line.strip()) > 1:
+					self.do_RENAME( line.split(None, 1)[1])
+				else:
+					print('\nPLEASE ENTER THE FILE NAME TO CHANGE TO NEW NAME\n')
 			elif line.split()[0].strip() == '도움말': 
 				if len(line.split()) > 1:
 					self.do_HELP_KOR( line.split(None, 1)[1])
 				else:
-					self.do_HELP_KOR( '')
+					self.do_HELP_KOR('')
 			elif line == '삭제': 
 				self.do_SCRATCH( None)
 			elif line == '미저장': 
@@ -550,7 +556,7 @@ class BASIC(cmd.Cmd):
 		line: The command line entered by the user. (str)
 		"""
 		# get the programs
-		programs = [file_name for file_name in os.listdir() if file_name.lower().endswith('.bsc')]
+		programs = [file_name for file_name in os.listdir('.') if file_name.lower().endswith('.bsc')]
 		# print em if there are any
 		if programs:
 			print()
