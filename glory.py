@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Edited by Sungjin Kim (facebook.com/jamessungjin.kim)
 
 """ 
@@ -493,6 +494,17 @@ class BASIC(cmd.Cmd):
 			print(' ', end = '')
 		else:
 			print()
+	
+	def _basic_execpy_r0(self, tail):
+	       """
+	       this code is moved to sjkim_lib for the future extension.
+	       basic_execpy(tail)
+	       exec a Python code statement
+	       
+	       Parameters:
+	       tail: The Python statement 
+	       """
+	       exec( tail, self.execpy_globals) 
 	
 	def _default_r0(self, line):
 		"""
@@ -1365,6 +1377,9 @@ class BASIC(cmd.Cmd):
 		gosubs = []
 		for_loops = {}
 		data = []
+		# execpy의 글로벌 변수를 {}로 셋팅한다.
+		#    그렇지 않으면 이전에 실행했던 변수들이 저장된다. 
+		self.execpy_globals = {}
 		try:
 			# loop through the basic code lines
 			while pointer < len(line_nums):
@@ -1382,7 +1397,14 @@ class BASIC(cmd.Cmd):
 					print()
 				# interpret based on first word of line
 				if basic_cmd == 'DATA' or basic_cmd == '데이타':
-					data.extend(eval('[{}]'.format(basic_tail)))
+					data.extend(eval('[{}]'.format(basic_tail)))				
+				elif basic_cmd == 'EXECPY' or basic_cmd == '실행하라':					
+					# self._basic_execpy_r0( basic_tail)
+					if flag_sjkim_lib: 
+						sjkim_lib.execpy(self, basic_tail)
+					else:
+						print( 'EXECPY is not supported.')
+
 				elif basic_cmd == 'DEF' or basic_cmd == '정의':
 					self.basic_def(basic_tail)
 				elif basic_cmd == 'DIM' or basic_cmd == '크기':
@@ -1722,6 +1744,7 @@ class BASIC(cmd.Cmd):
 		self.variables = {'__builtins__': {}, 'ABS': abs, 'ATN': math.atan, 'CHR': chr, 'COS': math.cos, 
 			'EXP': math.exp, 'INT': int, 'LOG': math.log, 'ORD': ord, 'RND': RND, 'SIN': math.sin, 
 			'SQR': math.sqrt, 'TAB': TAB, 'TAN': math.tan}
+		self.execpy_globals = {}	   
 		"Code will be read from the stat point."
 		
 		"Set up modes"
