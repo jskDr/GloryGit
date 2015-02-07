@@ -1684,7 +1684,8 @@ class BASIC(cmd.Cmd):
 				if part.startswith('"'):
 					line_tail += part
 				else:
-					line_tail += part.upper()
+					# line_tail += part.upper()
+					line_tail += part # 변수의 소대문자 구분하도록 함.
 		except IndexError:
 			# blank tail for parameterless commands
 			line_cmd = line.rsplit(None, 1)[0].upper()
@@ -1716,6 +1717,7 @@ class BASIC(cmd.Cmd):
 		add_dict['다음'] = ['의']
 		add_dict['하라'] = ['으로 가기를']
 		add_dict['주석이다'] = ['은', '는']
+		add_dict['실행하라'] = ['을', '를']
 
 		for each_cmd in add_dict.keys():
 			if cmd == each_cmd:
@@ -1774,16 +1776,16 @@ class BASIC(cmd.Cmd):
 		self.keywords = {'eng':[], 'kor':[], 'chn': [], 'spn': []}
 		self.keywords['eng'] = ['PRINT', 'INPUT', 'DATA', 'DEF', 'DIM', 'END', 'STOP', 'RETURN',\
 								'IF', 'FOR', 'NEXT', 'GOTO', 'GOSUB', 'THEN', 'TO', 'STEP',\
-                                        'REM']
+                                        'REM', 'EXECPY']
 		self.keywords['kor'] = ['출력하라', '입력하라', '데이타', '정의', '크기', '끝내라', '중단하라', '돌아가라',\
 								'만약', '돌려라', '다음', '가라', '갔다와라', '이라면', '부터', '단계',\
-                                        '주석이다']
+                                        '주석이다', '실행하라']
 		self.keywords['chn'] = ['打印', '輸入', '材料', '定義', '個兒', '片尾', '中斷', '回到原地',\
 								'万一', '期間', '下次', '走', '來往', '那时', '到', '階段',\
-                                        '주석']
+                                        '주석', '실행하라']
 		self.keywords['spn'] = ['IMPRIMIR' , 'ENTRADA' , 'DATOS' , 'DEFINIR ', 'DIM ', 'ACABADO', 'DETÉNGASE', 'RETORNO',\
 								'SI', 'PARA', 'SIGUIENTE', 'IRA', 'IRSUB', 'ENTONCES', 'A', 'PASO',\
-                                        '주석']
+                                        '주석', '실행하라']
 								
 		"We will show the current mode and some initial conditions if any."
 		self.mode_map = {'eng_kor_mixed': 'eng', 'kor': 'kor', \
