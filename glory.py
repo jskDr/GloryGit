@@ -40,14 +40,17 @@ import random
 import re
 import sys
 
+print( '다언어 코딩언어 - 글로리 (Glory)')
 try:
 	import sjkim_lib
 	flag_sjkim_lib = True
+	print( "All rights reserved by Sungjin Kim, (c)2015")
+	print( "Except the part written by Craig Ichabod O'Brien")
 except ImportError:
 	flag_sjkim_lib = False
-	print( "In this version, sjkim_lib is not supported.")
+	print( "Opensource - MIT License, written by Sungjin Kim(2015)")
+	print( "Based on the part written by Craig Ichabod O'Brien")
 	
-
 HELP = {}
 HELP_KOR = {} # 한글 버젼의 헬프를 만든다. HELP_KOR이나 도움말을 치면 나오도록 한다.
 HELP[''] = """
@@ -1073,7 +1076,6 @@ class BASIC(cmd.Cmd):
 		line: The command line entered by the user. (str)
 		"""
 		if self.mode == 'kor':
-			print( '우리말 코딩 글로리 (Glory)')
 			print( '방식: {0}, 코드: {1}, 문법: {2}'.format( self.mode, \
 				self.status['lang'], '한글식' if self.inverse else '영문식'))
 
