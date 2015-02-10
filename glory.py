@@ -50,6 +50,7 @@ except ImportError:
 	flag_sjkim_lib = False
 	print( "Opensource - MIT License, written by Sungjin Kim(2015)")
 	print( "Based on the part written by Craig Ichabod O'Brien")
+print("For more help, visit http://facebook.com/groups/lifecomp")
 	
 HELP = {}
 HELP_KOR = {} # 한글 버젼의 헬프를 만든다. HELP_KOR이나 도움말을 치면 나오도록 한다.
