@@ -88,7 +88,7 @@ HELP_KOR[''] = """
 [목록 보기 및 처리]
 신규 (NEW): 정해준 이름으로 새로운 프로그램을 시작한다.
 이전 (OLD): 이전 프로그램을 불러온다.
-이름 (RENAME): 현재 프로그램의 이름을 바꾼다.
+이름변경 (RENAME): 현재 프로그램의 이름을 바꾼다.
 목록 (CATALOG): 불러들일 수 있는 베이직 프로그램들을 보여준다.
 저장 (SAVE): 신규, OLD, RENAME으로 지정된 이름으로 저장한다.
 영어저장 (SAVEENG): 영어로 번역된 코드를 저장한다.
@@ -500,15 +500,15 @@ class BASIC(cmd.Cmd):
 			print()
 	
 	def _basic_execpy_r0(self, tail):
-	       """
-	       this code is moved to sjkim_lib for the future extension.
-	       basic_execpy(tail)
-	       exec a Python code statement
-	       
-	       Parameters:
-	       tail: The Python statement 
-	       """
-	       exec( tail, self.execpy_globals) 
+		"""
+		this code is moved to sjkim_lib for the future extension.
+		basic_execpy(tail)
+		exec a Python code statement
+		
+		Parameters:
+		tail: The Python statement 
+		"""
+		exec( tail, self.execpy_globals) 
 	
 	def _default_r0(self, line):
 		"""
